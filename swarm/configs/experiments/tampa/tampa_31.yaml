@@ -1,0 +1,48 @@
+PATHS:
+  ROOT_DIR: ./data/raw/
+  FEATS_DIR: ./data/processed
+  VIZ_DIR: ./data/plots
+  RES_DIR: ./data/results/
+
+FEATS:
+  FS: 33
+  WINDOW: 12
+  OVERLAP: 0.5
+  COL: accelUserZ
+  COLS: [accelUserZFiltered, gyroZ]
+  SMOTE: True
+  FEATS_LST: [time]
+  PCA: False
+
+FEATS_PARAM:
+  PSD_BW: 5
+  PSD_NPERSEG: 0.5 
+
+FLAGS:
+  VIZ: True
+  LABELS: True
+
+TRAIN:
+  CLS: XGB
+  MODE: SEMISUP
+  SMOTE_SAMPLING: [1., 1., 1.]
+
+CLS_PARAMS:
+  N_CLASS: 3
+  COV_TYPE: diag
+  MAX_ITER: 300
+
+
+GRID_SEARCH:
+  FEAT_LST: [psd, info, wavelet]
+  CLS_LST: [RF, XGB]
+  COL_LST: [accelUserZFiltered, gyroZFiltered]
+
+
+# XGB: 
+#   n_estimators: 100
+#   max_depth: 2
+#   objective: multi:softmax
+#   learning_rate: 0.01
+#   random_state: 42
+
