@@ -364,6 +364,8 @@ class InferTelemetry:
     df_inference['predictions'] = final_preds
     df_inference['predictions'] = df_inference['predictions'].apply(lambda x: conditions[x])
 
+    return df_inference, df_inference_raw
+  
     output_save_path = os.path.join(self.dest_dir, f"{dest_csv_name}.csv")
     print(f"Saving at location {output_save_path}")
 
