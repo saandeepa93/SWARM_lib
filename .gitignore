@@ -4,4 +4,4 @@ dist
 shed
 swarm_rqa_test.egg-info
 build
-
+__pycache__
