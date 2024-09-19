@@ -1,30 +1,47 @@
-# import sys
-# sys.path.append('.')
+
+import plotly.express as px
+import matplotlib.pyplot as plt
+from datetime import datetime
 import os 
-from tqdm import tqdm
-import numpy as np
 import pandas as pd
-import random
-import argparse
-import joblib
+
+import librosa
+from sklearn.mixture import GaussianMixture
+from sklearn.base import clone
+from sklearn.base import clone
+from sklearn.cluster import KMeans
+from sklearn.model_selection import train_test_split, RepeatedStratifiedKFold, cross_val_score, StratifiedKFold
+from sklearn.feature_selection import SelectFromModel
+from sklearn.impute import SimpleImputer
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.svm import SVC
+from sklearn.semi_supervised import SelfTrainingClassifier
+# from sklearn.pipeline import Pipeline
+from imblearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
+from sklearn.utils.class_weight import compute_sample_weight
+from sklearn.metrics import accuracy_score, f1_score, \
+  precision_score, recall_score, confusion_matrix, multilabel_confusion_matrix, make_scorer, classification_report
+
+import xgboost as xgb
+
+from imblearn.over_sampling import SMOTE, SVMSMOTE
+from imblearn.combine import SMOTETomek
+from imblearn.under_sampling import TomekLinks
+
 
 from scipy import signal
 from scipy.stats import variation, entropy
 from scipy import stats
 import pywt
+import shap
+from imports import *
+import joblib
 
-import matplotlib.pyplot as plt
-
-
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.impute import SimpleImputer
-from sklearn.compose import ColumnTransformer
-import librosa
-import plotly.express as px
-
-from swarm.configs import get_cfg_defaults
-
+from umap import UMAP
+import numpy as np
 
 
 
@@ -360,116 +377,3 @@ def compute_features(cfg, windows, mode="train", cols = ["accelUserZFiltered"]):
     df_all.loc[i] = sub_stft_feats_lst
 
   return df_all, input_columns
-
-
-color_seq = ['#EF553B', '#00CC96', '#636EFA', '#AB63FA', '#FFA15A', '#19D3F3', '#FF6692', '#B6E880', '#FF97FF', '#FECB52']
-
-def draw_map(df, name, col):
-  color_discrete_map={
-        "Smooth" : color_seq[1],  # Green
-        "Long Distress": color_seq[0],  # Red
-        "Short Distress": color_seq[2]   # Blue
-        # Add more classes and colors as needed
-    }
-  
-  # df['colormap'] = df[col].apply(lambda x: color_discrete_map[x])
-  fig = px.scatter_mapbox(
-    df,
-    lat='lat',
-    lon='lon',
-    # color_continuous_scale=px.colors.cyclical.IceFire,
-    size_max=15,
-    color=f'{col}',
-    color_discrete_map = color_discrete_map,
-    mapbox_style='open-street-map',
-    hover_data=['fname', f'{col}']
-  )
-  fig.update_layout(
-    mapbox=dict(
-        # fitbounds="locations",  # Automatically zoom to fit all points
-        zoom=10  # Optional: initial zoom level
-    )
-  )
-  fig.write_html(name)
-
-
-def save_labels(df, df_inference, output_save_path):
-  df = df.reset_index()
-  df['prediction'] = "Smooth"
-  for i, (start, end) in enumerate(df_inference.indices_lst):
-    df.loc[start:end, 'prediction'] = df_inference.loc[i, 'predictions']
-  df.to_csv(output_save_path)
-  return df
-
-class InferTelemetry:
-  def __init__(self, model_dir, config_dir) -> None:
-    self.model_dir = model_dir
-    self.config_dir = config_dir
-
-  def predict(self, csv_dir):
-
-    city = 'tampa'
-    configs = ['tampa_37', 'tampa_38']
-
-    y_preds_all = []
-    for conf in configs:
-      config_path = os.path.join(self.config_dir, city, f"{conf}.yaml")
-
-      # LOAD CONFIGURATION
-      cfg = get_cfg_defaults()
-      cfg.merge_from_file(config_path)
-      cfg.freeze()
-      print(cfg)
-
-      inference_paths = [csv_dir]
-     
-
-      df_inference = []
-      for path in inference_paths:
-        df_tr = load_data(cfg, path)
-        df_inference.append(df_tr)
-      df_inference = pd.concat(df_inference, axis=0, ignore_index=True)
-      df_inference_raw = df_inference.sort_values(by='timestamp')
-
-
-      windows_inference, indices_lst_train = sliding_window(df_inference_raw, cfg)
-
-      cols = cfg.FEATS.COLS
-      df_inference, input_columns = compute_features(cfg, windows_inference, cols = cols)
-      df_inference['indices_lst'] = indices_lst_train
-
-      # clf_path = os.path.join(self.model_dir, city, conf, f"XGB_{cfg.TRAIN.MODE}_{conf.split('_')[1]}.pkl")
-      clf_path = os.path.join(self.model_dir, city, conf, f"XGB_{cfg.TRAIN.MODE}_0.pkl")
-
-      clf = joblib.load(clf_path)
-      y_preds = clf.predict_proba(df_inference[input_columns])
-      y_preds_all.append(y_preds)
-
-    all_probs = np.stack(y_preds_all, axis=0)
-    conf, r, p = all_probs.shape
-
-
-    max_vals = np.max(all_probs, axis=-1)
-    max_args = np.argmax(all_probs, axis=-1)
-
-    max_config_vals = np.max(max_vals, axis=0)
-    max_config_args = np.argmax(max_vals, axis=0)
-
-    second_dim_indices = np.arange(r)
-    final_preds = max_args[max_config_args, second_dim_indices]
-
-    conditions = {
-      0: 'Smooth', 
-      1: 'Short Distress',
-      2: 'Long Distress'
-    }
-    
-    df_inference['predictions'] = final_preds
-    df_inference['predictions'] = df_inference['predictions'].apply(lambda x: conditions[x])
-
-    # df_labels = save_labels(df_inference_raw, df_inference, dest_csv_name)
-    # draw_map(df_labels, dest_map_name, "prediction")
-
-    return df_inference, df_inference_raw
-  
-
