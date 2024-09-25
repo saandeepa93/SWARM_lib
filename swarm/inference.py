@@ -229,9 +229,9 @@ def preprocess(cfg, df):
 def load_data(cfg, root_dir, test_set_names=[], mode="train"):
   list_df = []
 
-  for entry in os.scandir(root_dir):
-    fpath = entry.path 
-    fname = entry.name 
+  # for entry in os.scandir(root_dir):
+  for fpath in root_dir:
+    fname = fpath.split("/")[-1]
     if fname.split(".")[-1] != "csv":
       continue
     

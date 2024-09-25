@@ -9,7 +9,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
   include_package_data=True,
   name='swarm_rqa_test',
-  version='0.0.14',
+  version='0.0.15',
   description='SWARM_RQA_TEST',
   packages = find_packages(),
   install_requires = [
