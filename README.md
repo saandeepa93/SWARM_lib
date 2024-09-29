@@ -1,5 +1,7 @@
 # **SWARM Inference Module**
 
+[![Upload Python Package](https://github.com/saandeepa93/SWARM_lib/actions/workflows/python-publish.yml/badge.svg)](https://github.com/saandeepa93/SWARM_lib/actions/workflows/python-publish.yml)
+
 ## **Setup**
 
 ```
