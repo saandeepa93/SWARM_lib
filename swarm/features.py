@@ -40,7 +40,7 @@ import shap
 from imports import *
 import joblib
 
-from umap import UMAP
+from tqdm import tqdm
 import numpy as np
 
 
