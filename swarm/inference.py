@@ -20,7 +20,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
-import librosa
+# import librosa
 import plotly.express as px
 
 from swarm.configs import get_cfg_defaults
@@ -126,46 +126,46 @@ def compute_wavelet(cfg, data):
   return feats
 
 
-def compute_stft_statistics(stft_array):
-  frequencies = np.linspace(0, 0.5, stft_array.shape[0])
-  magnitudes = np.abs(stft_array)
+# def compute_stft_statistics(stft_array):
+#   frequencies = np.linspace(0, 0.5, stft_array.shape[0])
+#   magnitudes = np.abs(stft_array)
 
-  # 1. Spectral centroid
-  spectral_centroid = np.sum(frequencies[:, np.newaxis] * magnitudes, axis=0) / (np.sum(magnitudes, axis=0)  + 1e-10)
+#   # 1. Spectral centroid
+#   spectral_centroid = np.sum(frequencies[:, np.newaxis] * magnitudes, axis=0) / (np.sum(magnitudes, axis=0)  + 1e-10)
 
-  # 2. Spectral bandwidth
-  spectral_bandwidth = np.sqrt(np.sum((frequencies[:, np.newaxis] - spectral_centroid) ** 2 * magnitudes, axis=0) / (np.sum(magnitudes, axis=0)  + 1e-10)) 
+#   # 2. Spectral bandwidth
+#   spectral_bandwidth = np.sqrt(np.sum((frequencies[:, np.newaxis] - spectral_centroid) ** 2 * magnitudes, axis=0) / (np.sum(magnitudes, axis=0)  + 1e-10)) 
 
-  # 3. Spectral flux
-  spectral_flux = np.sqrt(np.sum(np.diff(magnitudes, axis=0)**2, axis=0))
+#   # 3. Spectral flux
+#   spectral_flux = np.sqrt(np.sum(np.diff(magnitudes, axis=0)**2, axis=0))
 
-  # 4. Spectral rolloff
-  rolloff_percentage = 0.85
-  rolloff_thresholds = rolloff_percentage * np.sum(magnitudes, axis=0)
-  rolloff_indices = np.argmax(np.cumsum(magnitudes, axis=0) >= rolloff_thresholds, axis=0)
-  spectral_rolloff = frequencies[rolloff_indices]
+#   # 4. Spectral rolloff
+#   rolloff_percentage = 0.85
+#   rolloff_thresholds = rolloff_percentage * np.sum(magnitudes, axis=0)
+#   rolloff_indices = np.argmax(np.cumsum(magnitudes, axis=0) >= rolloff_thresholds, axis=0)
+#   spectral_rolloff = frequencies[rolloff_indices]
 
-  # # 8. Spectral entropy
-  probability_spectrum = magnitudes / (np.sum(magnitudes, axis=0)  + 1e-10)
-  probability_spectrum[probability_spectrum == 0] = 1e-10  # To avoid log(0)
-  spectral_entropy = -np.sum(probability_spectrum * np.log(probability_spectrum), axis=0)
+#   # # 8. Spectral entropy
+#   probability_spectrum = magnitudes / (np.sum(magnitudes, axis=0)  + 1e-10)
+#   probability_spectrum[probability_spectrum == 0] = 1e-10  # To avoid log(0)
+#   spectral_entropy = -np.sum(probability_spectrum * np.log(probability_spectrum), axis=0)
 
-  # 9. Dominant frequency
-  dominant_frequency_indices = np.argmax(magnitudes, axis=0)
-  dominant_frequencies = frequencies[dominant_frequency_indices]
+#   # 9. Dominant frequency
+#   dominant_frequency_indices = np.argmax(magnitudes, axis=0)
+#   dominant_frequencies = frequencies[dominant_frequency_indices]
 
-  # 11. Harmonic ratio
-  harmonic_ratio = np.sum(magnitudes[1:10, :], axis=0) / (np.sum(magnitudes, axis=0) + 1e-10)
+#   # 11. Harmonic ratio
+#   harmonic_ratio = np.sum(magnitudes[1:10, :], axis=0) / (np.sum(magnitudes, axis=0) + 1e-10)
 
-  # 12. Pitch
-  pitches, _ = librosa.piptrack(S=stft_array)
-  pitch = np.max(pitches, axis=0)
-  pitch = pitch[~np.isnan(pitch)]
+#   # 12. Pitch
+#   pitches, _ = librosa.piptrack(S=stft_array)
+#   pitch = np.max(pitches, axis=0)
+#   pitch = pitch[~np.isnan(pitch)]
 
-  return compute_time_statistics(harmonic_ratio) + \
-          compute_time_statistics(spectral_flux) + \
-            compute_time_statistics(spectral_bandwidth) + \
-              compute_time_statistics(dominant_frequencies) 
+#   return compute_time_statistics(harmonic_ratio) + \
+#           compute_time_statistics(spectral_flux) + \
+#             compute_time_statistics(spectral_bandwidth) + \
+#               compute_time_statistics(dominant_frequencies) 
     
 
 
@@ -319,7 +319,7 @@ def compute_features(cfg, windows, mode="train", cols = ["accelUserZFiltered"]):
       band_powers = psd_with_bands(cfg, z_arr)
       wavelet_feats = compute_wavelet(cfg, z_arr)
       time_feats = compute_time_statistics(z_arr)
-      freq_feats = compute_stft_statistics(Zxx)
+      # freq_feats = compute_stft_statistics(Zxx)
 
       # for i in freq_feats:
       #   print(min(i), max(i))
@@ -333,7 +333,7 @@ def compute_features(cfg, windows, mode="train", cols = ["accelUserZFiltered"]):
       h = (energy_w * h_t).sum()
 
       if "info" in cfg.FEATS.FEATS_LST:
-        sub_stft_feats_lst += freq_feats
+        sub_stft_feats_lst += [cv, h_t]
 
       if "psd" in cfg.FEATS.FEATS_LST:
         for band_feat in band_powers:
@@ -423,7 +423,6 @@ class InferTelemetry:
 
       inference_paths = [csv_dir]
      
-
       df_inference = []
       for path in inference_paths:
         df_tr = load_data(cfg, path)
