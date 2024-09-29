@@ -302,7 +302,7 @@ def compute_features(cfg, windows, mode="train", cols = ["accelUserZFiltered"]):
   hanning_window = np.hanning(window_length)
 
   # APPEND DATAFRAME FEATURES PER WINDOW
-  for i, sub_df in enumerate(tqdm(windows)):
+  for i, sub_df in enumerate(windows):
     sub_stft_feats_lst = []
     ftemp = f"{sub_df['fname'].iloc[0]}_{i}"
     for col in cols:
