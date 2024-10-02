@@ -409,7 +409,7 @@ class InferTelemetry:
   def predict(self, csv_dir):
 
     city = 'tampa'
-    configs = ['tampa_37', 'tampa_38']
+    configs = ['tampa_39', 'tampa_40']
 
     y_preds_all = []
     for conf in configs:
@@ -438,7 +438,7 @@ class InferTelemetry:
       df_inference['indices_lst'] = indices_lst_train
 
       # clf_path = os.path.join(self.model_dir, city, conf, f"XGB_{cfg.TRAIN.MODE}_{conf.split('_')[1]}.pkl")
-      clf_path = os.path.join(self.model_dir, city, conf, f"XGB_{cfg.TRAIN.MODE}_0.pkl")
+      clf_path = os.path.join(self.model_dir, city, conf, f"XGB_{cfg.TRAIN.MODE}_3.pkl")
 
       clf = joblib.load(clf_path)
       y_preds = clf.predict_proba(df_inference[input_columns])
