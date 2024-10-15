@@ -5,10 +5,10 @@ model_dir = "/home/saandeepaath-admin/projects/internship/SWARM/exp1/checkpoints
 dest_dir = "./data/" # DESTINATION DIR
 config_dir = "/home/saandeepaath-admin/projects/internship/SWARM/exp1/configs/experiments" # CONFIGURATIONS
 csv_dir = [
-  '/home/saandeepaath-admin/projects/internship/SWARM/time_inference/data/tampa_0628_gt/20240628_123548H.csv',
-  '/home/saandeepaath-admin/projects/internship/SWARM/time_inference/data/tampa_0628_gt/20240628_123648H.csv',
-  '/home/saandeepaath-admin/projects/internship/SWARM/time_inference/data/tampa_0628_gt/20240628_123748H.csv',
-  '/home/saandeepaath-admin/projects/internship/SWARM/time_inference/data/tampa_0628_gt/20240628_135740H.csv',
+  '/home/saandeepaath-admin/projects/internship/SWARM/time_inference/data/20241010_14120019H.csv',
+  # '/home/saandeepaath-admin/projects/internship/SWARM/time_inference/data/tampa_0628_gt/20240628_123648H.csv',
+  # '/home/saandeepaath-admin/projects/internship/SWARM/time_inference/data/tampa_0628_gt/20240628_123748H.csv',
+  # '/home/saandeepaath-admin/projects/internship/SWARM/time_inference/data/tampa_0628_gt/20240628_135740H.csv',
 ]
 
 
