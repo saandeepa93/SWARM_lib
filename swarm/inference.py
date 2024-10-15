@@ -236,7 +236,7 @@ def load_data(cfg, root_dir, test_set_names=[], mode="train"):
       continue
     
     fname_wo = fname.split(".")[0]
-    df_temp = pd.read_csv(fpath)
+    df_temp = pd.read_csv(fpath, header=0, na_filter=False)
     df_temp['fname'] = fname.split(".")[0]
     if fname_wo in test_set_names or mode == "test":
       continue
