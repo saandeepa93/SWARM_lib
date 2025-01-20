@@ -9,7 +9,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
   include_package_data=True,
   name='swarm_rqa_test',
-  version='0.0.22',
+  version='0.1.0',
   description='SWARM_RQA_TEST',
   packages = find_packages(),
   install_requires = [
@@ -24,7 +24,13 @@ setup(
     'xgboost==2.1.0',
     'yacs==0.1.8',
     'pywavelets==1.6.0',
-    'plotly-express==0.4.1'
+    'plotly-express==0.4.1',
+    'torch==2.5.1+cpu',
+    'torchvision==0.20.1+cpu',
+    'onnx==1.17.0',
+    'onnxruntime==1.20.1',
+    'einops==0.8.0'
+
   ],
   package_data={
     'my_package': ['configs/*']
