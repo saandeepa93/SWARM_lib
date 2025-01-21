@@ -9,7 +9,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
   include_package_data=True,
   name='swarm_rqa_test',
-  version='0.1.5',
+  version='0.1.6',
   description='SWARM_RQA_TEST',
   packages = find_packages(),
   install_requires = [
@@ -32,7 +32,7 @@ setup(
     'einops==0.8.0'
 
   ],
-  dependency_links=['https://download.pytorch.org/whl/cpu'],
+  dependency_links=['https://download.pytorch.org/whl/cpu/torch_stable.html'],
   package_data={
     'my_package': ['configs/*']
   },
