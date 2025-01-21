@@ -31,5 +31,6 @@ df_inference_raw = save_labels(df_inference_raw, df_inference)
 df_smooth_raw = df_inference_raw[df_inference_raw['prediction'] == "Smooth"]
 swarmF_obg = swarm.InferFourth(onnx_dir, gmm_dir)
 df_smooth_inference = swarmF_obg.predict(df_smooth_raw)
+from collections import Counter
 print(df_inference_raw.shape)
 
