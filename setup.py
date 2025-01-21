@@ -9,7 +9,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
   include_package_data=True,
   name='swarm_rqa_test',
-  version='0.1.7',
+  version='0.1.8',
   description='SWARM_RQA_TEST',
   packages = find_packages(),
   install_requires = [
@@ -25,14 +25,12 @@ setup(
     'yacs==0.1.8',
     'pywavelets==1.6.0',
     'plotly-express==0.4.1',
-    "torch==2.1.0+cpu; sys_platform != 'darwin'",
-    "torchvision==0.20.1+cpu; sys_platform != 'darwin'",
     'onnx==1.17.0',
     'onnxruntime==1.20.1',
     'einops==0.8.0'
 
   ],
-  dependency_links=['https://download.pytorch.org/whl/cpu/torch_stable.html'],
+  # dependency_links=['https://download.pytorch.org/whl/cpu/torch_stable.html'],
   package_data={
     'my_package': ['configs/*']
   },
